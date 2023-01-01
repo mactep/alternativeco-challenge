@@ -7,9 +7,10 @@ import (
 	"errors"
 	"fmt"
 	"sync"
+	"time"
 
-	"github.com/mactep/alternativeco-challenge/email/ent/email"
-	"github.com/mactep/alternativeco-challenge/email/ent/predicate"
+	"github.com/mactep/alternativeco-challenge/email/internal/ent/email"
+	"github.com/mactep/alternativeco-challenge/email/internal/ent/predicate"
 
 	"entgo.io/ent"
 )
@@ -33,6 +34,8 @@ type EmailMutation struct {
 	typ           string
 	id            *int
 	email         *string
+	createdAt     *time.Time
+	updatedAt     *time.Time
 	clearedFields map[string]struct{}
 	done          bool
 	oldValue      func(context.Context) (*Email, error)
@@ -173,6 +176,78 @@ func (m *EmailMutation) ResetEmail() {
 	m.email = nil
 }
 
+// SetCreatedAt sets the "createdAt" field.
+func (m *EmailMutation) SetCreatedAt(t time.Time) {
+	m.createdAt = &t
+}
+
+// CreatedAt returns the value of the "createdAt" field in the mutation.
+func (m *EmailMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.createdAt
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "createdAt" field's value of the Email entity.
+// If the Email object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EmailMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "createdAt" field.
+func (m *EmailMutation) ResetCreatedAt() {
+	m.createdAt = nil
+}
+
+// SetUpdatedAt sets the "updatedAt" field.
+func (m *EmailMutation) SetUpdatedAt(t time.Time) {
+	m.updatedAt = &t
+}
+
+// UpdatedAt returns the value of the "updatedAt" field in the mutation.
+func (m *EmailMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updatedAt
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updatedAt" field's value of the Email entity.
+// If the Email object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EmailMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updatedAt" field.
+func (m *EmailMutation) ResetUpdatedAt() {
+	m.updatedAt = nil
+}
+
 // Where appends a list predicates to the EmailMutation builder.
 func (m *EmailMutation) Where(ps ...predicate.Email) {
 	m.predicates = append(m.predicates, ps...)
@@ -192,9 +267,15 @@ func (m *EmailMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *EmailMutation) Fields() []string {
-	fields := make([]string, 0, 1)
+	fields := make([]string, 0, 3)
 	if m.email != nil {
 		fields = append(fields, email.FieldEmail)
+	}
+	if m.createdAt != nil {
+		fields = append(fields, email.FieldCreatedAt)
+	}
+	if m.updatedAt != nil {
+		fields = append(fields, email.FieldUpdatedAt)
 	}
 	return fields
 }
@@ -206,6 +287,10 @@ func (m *EmailMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case email.FieldEmail:
 		return m.Email()
+	case email.FieldCreatedAt:
+		return m.CreatedAt()
+	case email.FieldUpdatedAt:
+		return m.UpdatedAt()
 	}
 	return nil, false
 }
@@ -217,6 +302,10 @@ func (m *EmailMutation) OldField(ctx context.Context, name string) (ent.Value, e
 	switch name {
 	case email.FieldEmail:
 		return m.OldEmail(ctx)
+	case email.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case email.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown Email field %s", name)
 }
@@ -232,6 +321,20 @@ func (m *EmailMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetEmail(v)
+		return nil
+	case email.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case email.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Email field %s", name)
@@ -284,6 +387,12 @@ func (m *EmailMutation) ResetField(name string) error {
 	switch name {
 	case email.FieldEmail:
 		m.ResetEmail()
+		return nil
+	case email.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case email.FieldUpdatedAt:
+		m.ResetUpdatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown Email field %s", name)

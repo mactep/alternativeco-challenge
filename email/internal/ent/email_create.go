@@ -6,10 +6,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/mactep/alternativeco-challenge/email/ent/email"
+	"github.com/mactep/alternativeco-challenge/email/internal/ent/email"
 )
 
 // EmailCreate is the builder for creating a Email entity.
@@ -25,6 +26,34 @@ func (ec *EmailCreate) SetEmail(s string) *EmailCreate {
 	return ec
 }
 
+// SetCreatedAt sets the "createdAt" field.
+func (ec *EmailCreate) SetCreatedAt(t time.Time) *EmailCreate {
+	ec.mutation.SetCreatedAt(t)
+	return ec
+}
+
+// SetNillableCreatedAt sets the "createdAt" field if the given value is not nil.
+func (ec *EmailCreate) SetNillableCreatedAt(t *time.Time) *EmailCreate {
+	if t != nil {
+		ec.SetCreatedAt(*t)
+	}
+	return ec
+}
+
+// SetUpdatedAt sets the "updatedAt" field.
+func (ec *EmailCreate) SetUpdatedAt(t time.Time) *EmailCreate {
+	ec.mutation.SetUpdatedAt(t)
+	return ec
+}
+
+// SetNillableUpdatedAt sets the "updatedAt" field if the given value is not nil.
+func (ec *EmailCreate) SetNillableUpdatedAt(t *time.Time) *EmailCreate {
+	if t != nil {
+		ec.SetUpdatedAt(*t)
+	}
+	return ec
+}
+
 // Mutation returns the EmailMutation object of the builder.
 func (ec *EmailCreate) Mutation() *EmailMutation {
 	return ec.mutation
@@ -36,6 +65,7 @@ func (ec *EmailCreate) Save(ctx context.Context) (*Email, error) {
 		err  error
 		node *Email
 	)
+	ec.defaults()
 	if len(ec.hooks) == 0 {
 		if err = ec.check(); err != nil {
 			return nil, err
@@ -99,10 +129,28 @@ func (ec *EmailCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (ec *EmailCreate) defaults() {
+	if _, ok := ec.mutation.CreatedAt(); !ok {
+		v := email.DefaultCreatedAt()
+		ec.mutation.SetCreatedAt(v)
+	}
+	if _, ok := ec.mutation.UpdatedAt(); !ok {
+		v := email.DefaultUpdatedAt()
+		ec.mutation.SetUpdatedAt(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (ec *EmailCreate) check() error {
 	if _, ok := ec.mutation.Email(); !ok {
 		return &ValidationError{Name: "email", err: errors.New(`ent: missing required field "Email.email"`)}
+	}
+	if _, ok := ec.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "createdAt", err: errors.New(`ent: missing required field "Email.createdAt"`)}
+	}
+	if _, ok := ec.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updatedAt", err: errors.New(`ent: missing required field "Email.updatedAt"`)}
 	}
 	return nil
 }
@@ -135,6 +183,14 @@ func (ec *EmailCreate) createSpec() (*Email, *sqlgraph.CreateSpec) {
 		_spec.SetField(email.FieldEmail, field.TypeString, value)
 		_node.Email = value
 	}
+	if value, ok := ec.mutation.CreatedAt(); ok {
+		_spec.SetField(email.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := ec.mutation.UpdatedAt(); ok {
+		_spec.SetField(email.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
 	return _node, _spec
 }
 
@@ -152,6 +208,7 @@ func (ecb *EmailCreateBulk) Save(ctx context.Context) ([]*Email, error) {
 	for i := range ecb.builders {
 		func(i int, root context.Context) {
 			builder := ecb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*EmailMutation)
 				if !ok {

@@ -12,6 +12,8 @@ var (
 	EmailsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "email", Type: field.TypeString},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 	}
 	// EmailsTable holds the schema information for the "emails" table.
 	EmailsTable = &schema.Table{

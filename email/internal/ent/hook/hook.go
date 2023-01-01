@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/mactep/alternativeco-challenge/email/ent"
+	"github.com/mactep/alternativeco-challenge/email/internal/ent"
 )
 
 // The EmailFunc type is an adapter to allow the use of ordinary

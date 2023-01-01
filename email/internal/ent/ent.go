@@ -10,7 +10,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/mactep/alternativeco-challenge/email/ent/email"
+	"github.com/mactep/alternativeco-challenge/email/internal/ent/email"
 )
 
 // ent aliases to avoid import conflicts in user's code.

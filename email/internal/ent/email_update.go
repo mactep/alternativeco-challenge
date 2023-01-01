@@ -6,12 +6,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/mactep/alternativeco-challenge/email/ent/email"
-	"github.com/mactep/alternativeco-challenge/email/ent/predicate"
+	"github.com/mactep/alternativeco-challenge/email/internal/ent/email"
+	"github.com/mactep/alternativeco-challenge/email/internal/ent/predicate"
 )
 
 // EmailUpdate is the builder for updating Email entities.
@@ -33,6 +34,26 @@ func (eu *EmailUpdate) SetEmail(s string) *EmailUpdate {
 	return eu
 }
 
+// SetCreatedAt sets the "createdAt" field.
+func (eu *EmailUpdate) SetCreatedAt(t time.Time) *EmailUpdate {
+	eu.mutation.SetCreatedAt(t)
+	return eu
+}
+
+// SetNillableCreatedAt sets the "createdAt" field if the given value is not nil.
+func (eu *EmailUpdate) SetNillableCreatedAt(t *time.Time) *EmailUpdate {
+	if t != nil {
+		eu.SetCreatedAt(*t)
+	}
+	return eu
+}
+
+// SetUpdatedAt sets the "updatedAt" field.
+func (eu *EmailUpdate) SetUpdatedAt(t time.Time) *EmailUpdate {
+	eu.mutation.SetUpdatedAt(t)
+	return eu
+}
+
 // Mutation returns the EmailMutation object of the builder.
 func (eu *EmailUpdate) Mutation() *EmailMutation {
 	return eu.mutation
@@ -44,6 +65,7 @@ func (eu *EmailUpdate) Save(ctx context.Context) (int, error) {
 		err      error
 		affected int
 	)
+	eu.defaults()
 	if len(eu.hooks) == 0 {
 		affected, err = eu.sqlSave(ctx)
 	} else {
@@ -92,6 +114,14 @@ func (eu *EmailUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (eu *EmailUpdate) defaults() {
+	if _, ok := eu.mutation.UpdatedAt(); !ok {
+		v := email.UpdateDefaultUpdatedAt()
+		eu.mutation.SetUpdatedAt(v)
+	}
+}
+
 func (eu *EmailUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
@@ -112,6 +142,12 @@ func (eu *EmailUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := eu.mutation.Email(); ok {
 		_spec.SetField(email.FieldEmail, field.TypeString, value)
+	}
+	if value, ok := eu.mutation.CreatedAt(); ok {
+		_spec.SetField(email.FieldCreatedAt, field.TypeTime, value)
+	}
+	if value, ok := eu.mutation.UpdatedAt(); ok {
+		_spec.SetField(email.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, eu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -138,6 +174,26 @@ func (euo *EmailUpdateOne) SetEmail(s string) *EmailUpdateOne {
 	return euo
 }
 
+// SetCreatedAt sets the "createdAt" field.
+func (euo *EmailUpdateOne) SetCreatedAt(t time.Time) *EmailUpdateOne {
+	euo.mutation.SetCreatedAt(t)
+	return euo
+}
+
+// SetNillableCreatedAt sets the "createdAt" field if the given value is not nil.
+func (euo *EmailUpdateOne) SetNillableCreatedAt(t *time.Time) *EmailUpdateOne {
+	if t != nil {
+		euo.SetCreatedAt(*t)
+	}
+	return euo
+}
+
+// SetUpdatedAt sets the "updatedAt" field.
+func (euo *EmailUpdateOne) SetUpdatedAt(t time.Time) *EmailUpdateOne {
+	euo.mutation.SetUpdatedAt(t)
+	return euo
+}
+
 // Mutation returns the EmailMutation object of the builder.
 func (euo *EmailUpdateOne) Mutation() *EmailMutation {
 	return euo.mutation
@@ -156,6 +212,7 @@ func (euo *EmailUpdateOne) Save(ctx context.Context) (*Email, error) {
 		err  error
 		node *Email
 	)
+	euo.defaults()
 	if len(euo.hooks) == 0 {
 		node, err = euo.sqlSave(ctx)
 	} else {
@@ -210,6 +267,14 @@ func (euo *EmailUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (euo *EmailUpdateOne) defaults() {
+	if _, ok := euo.mutation.UpdatedAt(); !ok {
+		v := email.UpdateDefaultUpdatedAt()
+		euo.mutation.SetUpdatedAt(v)
+	}
+}
+
 func (euo *EmailUpdateOne) sqlSave(ctx context.Context) (_node *Email, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
@@ -247,6 +312,12 @@ func (euo *EmailUpdateOne) sqlSave(ctx context.Context) (_node *Email, err error
 	}
 	if value, ok := euo.mutation.Email(); ok {
 		_spec.SetField(email.FieldEmail, field.TypeString, value)
+	}
+	if value, ok := euo.mutation.CreatedAt(); ok {
+		_spec.SetField(email.FieldCreatedAt, field.TypeTime, value)
+	}
+	if value, ok := euo.mutation.UpdatedAt(); ok {
+		_spec.SetField(email.FieldUpdatedAt, field.TypeTime, value)
 	}
 	_node = &Email{config: euo.config}
 	_spec.Assign = _node.assignValues

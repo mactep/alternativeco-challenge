@@ -1,63 +1,34 @@
 package main
 
 import (
-	"context"
-	"fmt"
-	"log"
+	thunderEventRabbitmq "github.com/gothunder/thunder/pkg/events/rabbitmq"
+	thunderLogs "github.com/gothunder/thunder/pkg/log"
+	thunderChi "github.com/gothunder/thunder/pkg/router/chi"
+	transportinbound "github.com/mactep/alternativeco-challenge/email/internal/transport-inbound"
+	transportoutbound "github.com/mactep/alternativeco-challenge/email/internal/transport-outbound"
 
-	"github.com/mactep/alternativeco-challenge/email/ent"
-
-	_ "github.com/lib/pq"
+	"github.com/rs/zerolog/diode"
+	"go.uber.org/fx"
 )
 
 func main() {
-	client := Connect()
-	defer client.Close()
-	ctx := context.Background()
+	var w diode.Writer
 
-	// Create email
-	email, err := CreateEmail(ctx, client, "narutinho@vrau.com")
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(email)
+	app := fx.New(
+		fx.Populate(&w),
+		thunderLogs.Module,
+		thunderChi.Module,
+		fx.Invoke(thunderChi.StartListener),
 
-	// Delete email
-	err = DeleteEmail(ctx, client, email.ID)
-	if err != nil {
-		log.Fatal(err)
-	}
-}
+		transportinbound.Module,
+		transportoutbound.Module,
 
-func Connect() *ent.Client {
-	client, err := ent.Open("postgres", "host=localhost port=5432 user=postgres dbname=email sslmode=disable password=password")
-	if err != nil {
-		log.Fatalf("failed opening connection to postgres: %v", err)
-	}
+		thunderEventRabbitmq.PublisherModule,
+		thunderEventRabbitmq.InvokeConsumer,
+	)
+	app.Run()
 
-	// Run the auto migration tool.
-	if err := client.Schema.Create(context.Background()); err != nil {
-		log.Fatalf("failed creating schema resources: %v", err)
-	}
-
-	fmt.Println("Connected to database")
-	return client
-}
-
-func CreateEmail(ctx context.Context, client *ent.Client, email string) (*ent.Email, error) {
-	e, err := client.Email.Create().SetEmail(email).Save(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("failed creating email: %w", err)
-	}
-	log.Println("email created: ", e)
-	return e, nil
-}
-
-func DeleteEmail(ctx context.Context, client *ent.Client, id int) error {
-	err := client.Email.DeleteOneID(id).Exec(ctx)
-	if err != nil {
-		return fmt.Errorf("failed deleting email: %w", err)
-	}
-	log.Println("email deleted: ", id)
-	return nil
+	// This is required to flush the logs to stdout.
+	// We only want to do this after the app has exited.
+	thunderLogs.DiodeShutdown(w)
 }

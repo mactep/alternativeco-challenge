@@ -5,9 +5,10 @@ package ent
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/mactep/alternativeco-challenge/email/ent/email"
+	"github.com/mactep/alternativeco-challenge/email/internal/ent/email"
 )
 
 // Email is the model entity for the Email schema.
@@ -17,6 +18,10 @@ type Email struct {
 	ID int `json:"id,omitempty"`
 	// Email holds the value of the "email" field.
 	Email string `json:"email,omitempty"`
+	// CreatedAt holds the value of the "createdAt" field.
+	CreatedAt time.Time `json:"createdAt,omitempty"`
+	// UpdatedAt holds the value of the "updatedAt" field.
+	UpdatedAt time.Time `json:"updatedAt,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -28,6 +33,8 @@ func (*Email) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case email.FieldEmail:
 			values[i] = new(sql.NullString)
+		case email.FieldCreatedAt, email.FieldUpdatedAt:
+			values[i] = new(sql.NullTime)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Email", columns[i])
 		}
@@ -54,6 +61,18 @@ func (e *Email) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field email", values[i])
 			} else if value.Valid {
 				e.Email = value.String
+			}
+		case email.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field createdAt", values[i])
+			} else if value.Valid {
+				e.CreatedAt = value.Time
+			}
+		case email.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updatedAt", values[i])
+			} else if value.Valid {
+				e.UpdatedAt = value.Time
 			}
 		}
 	}
@@ -85,6 +104,12 @@ func (e *Email) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v, ", e.ID))
 	builder.WriteString("email=")
 	builder.WriteString(e.Email)
+	builder.WriteString(", ")
+	builder.WriteString("createdAt=")
+	builder.WriteString(e.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("updatedAt=")
+	builder.WriteString(e.UpdatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

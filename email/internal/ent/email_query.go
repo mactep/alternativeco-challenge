@@ -10,8 +10,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/mactep/alternativeco-challenge/email/ent/email"
-	"github.com/mactep/alternativeco-challenge/email/ent/predicate"
+	"github.com/mactep/alternativeco-challenge/email/internal/ent/email"
+	"github.com/mactep/alternativeco-challenge/email/internal/ent/predicate"
 )
 
 // EmailQuery is the builder for querying Email entities.
