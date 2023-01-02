@@ -5,8 +5,8 @@ package ent
 import (
 	"time"
 
-	"github.com/mactep/alternativeco-challenge/email/internal/ent/email"
-	"github.com/mactep/alternativeco-challenge/email/internal/ent/schema"
+	"github.com/mactep/alternativeco-challenge/email/internal/features/repository/ent/email"
+	"github.com/mactep/alternativeco-challenge/email/internal/features/repository/ent/schema"
 )
 
 // The init function reads all schema descriptors with runtime code

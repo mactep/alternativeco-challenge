@@ -5,12 +5,12 @@ package enttest
 import (
 	"context"
 
-	"github.com/mactep/alternativeco-challenge/email/internal/ent"
+	"github.com/mactep/alternativeco-challenge/email/internal/features/repository/ent"
 	// required by schema hooks.
-	_ "github.com/mactep/alternativeco-challenge/email/internal/ent/runtime"
+	_ "github.com/mactep/alternativeco-challenge/email/internal/features/repository/ent/runtime"
 
 	"entgo.io/ent/dialect/sql/schema"
-	"github.com/mactep/alternativeco-challenge/email/internal/ent/migrate"
+	"github.com/mactep/alternativeco-challenge/email/internal/features/repository/ent/migrate"
 )
 
 type (

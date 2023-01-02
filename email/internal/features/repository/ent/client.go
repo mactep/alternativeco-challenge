@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/mactep/alternativeco-challenge/email/internal/ent/migrate"
+	"github.com/mactep/alternativeco-challenge/email/internal/features/repository/ent/migrate"
 
-	"github.com/mactep/alternativeco-challenge/email/internal/ent/email"
+	"github.com/mactep/alternativeco-challenge/email/internal/features/repository/ent/email"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"

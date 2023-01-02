@@ -10,7 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/mactep/alternativeco-challenge/email/internal/ent/email"
+	"github.com/mactep/alternativeco-challenge/email/internal/features/repository/ent/email"
 )
 
 // EmailCreate is the builder for creating a Email entity.

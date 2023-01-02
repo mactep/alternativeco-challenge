@@ -9,8 +9,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/mactep/alternativeco-challenge/email/internal/ent/email"
-	"github.com/mactep/alternativeco-challenge/email/internal/ent/predicate"
+	"github.com/mactep/alternativeco-challenge/email/internal/features/repository/ent/email"
+	"github.com/mactep/alternativeco-challenge/email/internal/features/repository/ent/predicate"
 )
 
 // EmailDelete is the builder for deleting a Email entity.

@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/mactep/alternativeco-challenge/email/internal/ent/predicate"
+	"github.com/mactep/alternativeco-challenge/email/internal/features/repository/ent/predicate"
 )
 
 // ID filters vertices based on their ID field.

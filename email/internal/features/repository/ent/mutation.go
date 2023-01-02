@@ -9,8 +9,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/mactep/alternativeco-challenge/email/internal/ent/email"
-	"github.com/mactep/alternativeco-challenge/email/internal/ent/predicate"
+	"github.com/mactep/alternativeco-challenge/email/internal/features/repository/ent/email"
+	"github.com/mactep/alternativeco-challenge/email/internal/features/repository/ent/predicate"
 
 	"entgo.io/ent"
 )
