@@ -1,0 +1,25 @@
+services:
+  email:
+    image: golang:alpine
+    working_dir: /go/src/email
+    command: go run .
+    volumes:
+      - ./email:/go/src/email
+    ports:
+      - "5000:5000"
+
+  ban:
+    image: golang:alpine
+    working_dir: /go/src/ban
+    command: go run .
+    volumes:
+      - ./ban:/go/src/ban
+
+  db:
+    environment:
+      POSTGRES_DB: email
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db:/var/lib/postgresql/data:z

@@ -1,0 +1,36 @@
+version: "3.2"
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    hostname: rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  email:
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      PORT: 5000
+      RABBIT_URL: amqp://guest:guest@rabbitmq:5672
+
+  ban:
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      RABBIT_URL: amqp://guest:guest@rabbitmq:5672
+
+  db:
+    image: postgres:alpine
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5

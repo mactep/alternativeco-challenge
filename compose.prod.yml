@@ -1,0 +1,26 @@
+services:
+  rabbitmq:
+    ports:
+        - 5672:5672
+        - 15672:15672
+
+  email:
+    image: email_api
+    build:
+      context: ./email
+      dockerfile: Containerfile
+
+  ban:
+    image: ban_api
+    build:
+      context: ./ban
+      dockerfile: Containerfile
+
+  db:
+    environment:
+      POSTGRES_DB: email
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db:/var/lib/postgresql/data:z
