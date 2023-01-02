@@ -5,6 +5,8 @@ import (
 
 	"github.com/mactep/alternativeco-challenge/email/internal/features/repository/ent"
 	"github.com/rs/zerolog"
+
+	_ "github.com/lib/pq"
 )
 
 func NewClient(logger *zerolog.Logger) *ent.Client {

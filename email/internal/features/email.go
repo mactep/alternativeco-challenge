@@ -12,8 +12,8 @@ type EmailService struct {
 	logger *zerolog.Logger
 }
 
-func NewEmailService(client *ent.Client, logger *zerolog.Logger) *EmailService {
-	return &EmailService{
+func NewEmailService(client *ent.Client, logger *zerolog.Logger) EmailService {
+	return EmailService{
 		client: client,
 		logger: logger,
 	}

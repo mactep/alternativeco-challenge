@@ -4,6 +4,8 @@ import (
 	thunderEventRabbitmq "github.com/gothunder/thunder/pkg/events/rabbitmq"
 	thunderLogs "github.com/gothunder/thunder/pkg/log"
 	thunderChi "github.com/gothunder/thunder/pkg/router/chi"
+	"github.com/mactep/alternativeco-challenge/email/internal/features"
+	"github.com/mactep/alternativeco-challenge/email/internal/features/repository"
 	transportinbound "github.com/mactep/alternativeco-challenge/email/internal/transport-inbound"
 	transportoutbound "github.com/mactep/alternativeco-challenge/email/internal/transport-outbound"
 
@@ -22,13 +24,13 @@ func main() {
 
 		transportinbound.Module,
 		transportoutbound.Module,
+		repository.Module,
+		features.Module,
 
 		thunderEventRabbitmq.PublisherModule,
 		thunderEventRabbitmq.InvokeConsumer,
 	)
 	app.Run()
 
-	// This is required to flush the logs to stdout.
-	// We only want to do this after the app has exited.
 	thunderLogs.DiodeShutdown(w)
 }
