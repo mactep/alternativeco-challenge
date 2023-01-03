@@ -2,6 +2,7 @@ package features
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/mactep/alternativeco-challenge/email/internal/features/repository/ent"
 	"github.com/rs/zerolog"
@@ -37,4 +38,10 @@ func (e EmailService) Delete(ctx context.Context, id int) error {
 	}
 	e.logger.Info().Msg("email deleted")
 	return nil
+}
+
+// IsValidEmail checks if the email is valid using a regex pattern
+func IsValidEmail(email string) bool {
+	emailRegex := regexp.MustCompile(`^[a-zA-Z0-9.!#$%&'*+/=?^_` + "`" + `{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$`)
+	return emailRegex.MatchString(email)
 }
