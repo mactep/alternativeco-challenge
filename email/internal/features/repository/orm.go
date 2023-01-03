@@ -5,18 +5,25 @@ import (
 
 	"github.com/mactep/alternativeco-challenge/email/internal/features/repository/ent"
 	"github.com/rs/zerolog"
+	"go.uber.org/fx"
 
 	_ "github.com/lib/pq"
 )
 
-func NewClient(logger *zerolog.Logger) *ent.Client {
+func NewClient(logger *zerolog.Logger, lc fx.Lifecycle) *ent.Client {
 	client := Connect(logger)
-	defer client.Close()
+
+	lc.Append(fx.Hook{
+		OnStop: func(ctx context.Context) error {
+			return client.Close()
+		},
+	})
+
 	return client
 }
 
 func Connect(logger *zerolog.Logger) *ent.Client {
-	client, err := ent.Open("postgres", "host=localhost port=5432 user=postgres dbname=email sslmode=disable password=password")
+	client, err := ent.Open("postgres", "host=db port=5432 user=postgres dbname=email sslmode=disable password=password")
 	if err != nil {
 		logger.Error().Err(err).Msg("failed opening connection to postgres")
 	}
