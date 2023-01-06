@@ -26,8 +26,8 @@ containers.
     - [x] Database connection
     - [x] RabbitMQ connection
     - [x] Publish new email request
-- [-] ban service
-    - [ ] Data structure to store the ban list (trie/rbtree or golang's map)
+- [x] ban service
+    - [x] Data structure to store the ban list (trie/rbtree or golang's map)
     - [x] RabbitMQ connection
     - [x] Consume email events
     - [x] Publish ban event
