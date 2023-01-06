@@ -2,10 +2,15 @@ package consumers
 
 import (
 	thunderEvents "github.com/gothunder/thunder/pkg/events"
+	"github.com/mactep/alternativeco-challenge/ban/internal/features"
 )
 
-type ConsumerGroup struct{}
+type ConsumerGroup struct {
+	banService features.BanService
+}
 
-func newConsumerGroup() thunderEvents.Handler {
-	return &ConsumerGroup{}
+func newConsumerGroup(banService features.BanService) thunderEvents.Handler {
+	return &ConsumerGroup{
+		banService: banService,
+	}
 }
