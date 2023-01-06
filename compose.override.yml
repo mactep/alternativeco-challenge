@@ -6,8 +6,6 @@ services:
     volumes:
       - ./email:/go/src/email
       - ./ban:/go/src/ban
-    ports:
-      - "5000:5000"
 
   ban:
     image: golang:alpine
@@ -16,12 +14,3 @@ services:
     volumes:
       - ./ban:/go/src/ban
       - ./email:/go/src/email
-
-  db:
-    environment:
-      POSTGRES_DB: email
-      POSTGRES_PASSWORD: password
-    ports:
-      - "5432:5432"
-    volumes:
-      - ./db:/var/lib/postgresql/data:z

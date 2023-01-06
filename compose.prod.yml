@@ -1,20 +1,20 @@
 services:
   rabbitmq:
     ports:
-        - 5672:5672
-        - 15672:15672
+      - "5672:5672"
+      - "15672:15672"
 
   email:
     image: email_api
     build:
-      context: ./email
-      dockerfile: Containerfile
+      dockerfile: ./email/Containerfile
+    ports:
+      - "5000:5000"
 
   ban:
     image: ban_api
     build:
-      context: ./ban
-      dockerfile: Containerfile
+      dockerfile: ./ban/Containerfile
 
   db:
     environment:
