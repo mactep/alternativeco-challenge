@@ -5,6 +5,7 @@ services:
     command: go run .
     volumes:
       - ./email:/go/src/email
+      - ./ban:/go/src/ban
     ports:
       - "5000:5000"
 
@@ -14,6 +15,7 @@ services:
     command: go run .
     volumes:
       - ./ban:/go/src/ban
+      - ./email:/go/src/email
 
   db:
     environment:
