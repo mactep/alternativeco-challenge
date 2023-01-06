@@ -7,16 +7,23 @@ import (
 
 	"github.com/gothunder/thunder/pkg/router"
 	"github.com/mactep/alternativeco-challenge/email/internal/features"
+	"github.com/mactep/alternativeco-challenge/email/internal/features/repository/ent"
+	"github.com/mactep/alternativeco-challenge/email/internal/transport-outbound/publisher"
+	"github.com/mactep/alternativeco-challenge/email/pkg/events"
 )
 
-func NewEmailHandler(emailService features.EmailService) router.HandlerOutput {
+func NewEmailHandler(emailService features.EmailService, publisher *publisher.PublisherGroup) router.HandlerOutput {
 	return router.HandlerOutput{
-		Handler: emailHandler{emailService},
+		Handler: emailHandler{
+			emailService,
+			publisher,
+		},
 	}
 }
 
 type emailHandler struct {
-	service features.EmailService
+	service   features.EmailService
+	publisher *publisher.PublisherGroup
 }
 
 type EmailRequest struct {
@@ -43,6 +50,7 @@ func (h emailHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	ctx := r.Context()
 	emailRegistry, err := h.service.Create(ctx, emailRequest.Email)
+	h.publisher.SendEmailEvent(ctx, createEmailEvent(emailRegistry))
 
 	if err != nil {
 		http.Error(w, fmt.Sprintf("error creating email: %s", err), http.StatusInternalServerError)
@@ -67,4 +75,11 @@ func (h emailHandler) Method() string {
 
 func (h emailHandler) Pattern() string {
 	return "/email"
+}
+
+func createEmailEvent(email *ent.Email) events.EmailPayload {
+	return events.EmailPayload{
+		ID:    email.ID,
+		Email: email.Email,
+	}
 }

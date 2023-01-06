@@ -5,38 +5,36 @@ import (
 	"regexp"
 
 	"github.com/mactep/alternativeco-challenge/email/internal/features/repository/ent"
-	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 type EmailService struct {
 	client *ent.Client
-	logger *zerolog.Logger
 }
 
-func NewEmailService(client *ent.Client, logger *zerolog.Logger) EmailService {
+func NewEmailService(client *ent.Client) EmailService {
 	return EmailService{
 		client: client,
-		logger: logger,
 	}
 }
 
 func (e EmailService) Create(ctx context.Context, email string) (*ent.Email, error) {
 	emailRegistry, err := e.client.Email.Create().SetEmail(email).Save(ctx)
 	if err != nil {
-		e.logger.Error().Err(err).Msg("failed creating email")
+		log.Ctx(ctx).Error().Err(err).Msg("failed creating email")
 		return nil, err
 	}
-	e.logger.Info().Msg("email created")
+	log.Ctx(ctx).Info().Msg("email created")
 	return emailRegistry, nil
 }
 
 func (e EmailService) Delete(ctx context.Context, id int) error {
 	err := e.client.Email.DeleteOneID(id).Exec(ctx)
 	if err != nil {
-		e.logger.Error().Err(err).Msg("failed deleting email")
+		log.Ctx(ctx).Error().Err(err).Msg("failed deleting email")
 		return err
 	}
-	e.logger.Info().Msg("email deleted")
+	log.Ctx(ctx).Info().Msg("email deleted")
 	return nil
 }
 
