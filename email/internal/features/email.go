@@ -24,7 +24,7 @@ func (e EmailService) Create(ctx context.Context, email string) (*ent.Email, err
 		log.Ctx(ctx).Error().Err(err).Msg("failed creating email")
 		return nil, err
 	}
-	log.Ctx(ctx).Info().Msg("email created")
+	log.Ctx(ctx).Debug().Msg("email created")
 	return emailRegistry, nil
 }
 
@@ -34,7 +34,7 @@ func (e EmailService) Delete(ctx context.Context, id int) error {
 		log.Ctx(ctx).Error().Err(err).Msg("failed deleting email")
 		return err
 	}
-	log.Ctx(ctx).Info().Msg("email deleted")
+	log.Ctx(ctx).Debug().Msg("email deleted")
 	return nil
 }
 

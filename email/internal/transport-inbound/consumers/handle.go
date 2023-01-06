@@ -12,17 +12,17 @@ import (
 func (c *ConsumerGroup) Handle(ctx context.Context, topic string, decoder thunderEvents.EventDecoder) thunderEvents.HandlerResponse {
 	switch {
 	case topic == events.BanTopic:
-		log.Ctx(ctx).Info().Msg("got ban event")
 		var formattedPayload events.BanPayload
 		err := decoder.Decode(&formattedPayload)
 		if err != nil {
 			log.Ctx(ctx).Error().Err(err).Msg("failed to decode payload")
 			return thunderEvents.DeadLetter
 		}
+		log.Ctx(ctx).Debug().Msgf("Got ban request for domain ID '%d'", formattedPayload.ID)
 
 		return c.banEvent(ctx, formattedPayload)
 	case topic == emailEvents.EmailTopic:
-		log.Ctx(ctx).Info().Msg("got email event")
+		log.Ctx(ctx).Debug().Msg("got email event")
 		return thunderEvents.Retry
 	default:
 		return thunderEvents.DeadLetter
