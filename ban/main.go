@@ -22,6 +22,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	defer bannedDomainsSource.Close()
 
 	app := fx.New(
 		// The order of these options isn't important.
