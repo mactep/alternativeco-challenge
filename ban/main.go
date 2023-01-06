@@ -1,6 +1,9 @@
 package main
 
 import (
+	"io"
+	"os"
+
 	thunderEventRabbitmq "github.com/gothunder/thunder/pkg/events/rabbitmq"
 	thunderLogs "github.com/gothunder/thunder/pkg/log"
 	"github.com/mactep/alternativeco-challenge/ban/internal/features"
@@ -14,10 +17,22 @@ import (
 func main() {
 	var w diode.Writer
 
+	// read from file and return the io.Reader
+	bannedDomainsSource, err := os.Open("banned_domains.txt")
+	if err != nil {
+		panic(err)
+	}
+
 	app := fx.New(
 		// The order of these options isn't important.
 		thunderLogs.Module,
 		fx.Populate(&w),
+
+		fx.Provide(
+			func() io.Reader {
+				return bannedDomainsSource
+			},
+		),
 
 		transportinbound.Module,
 		transportoutbound.Module,
