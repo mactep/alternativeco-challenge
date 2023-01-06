@@ -20,16 +20,17 @@ containers.
 
 ## Features
 
-- [-] email service
+- [x] email service
     - [x] API endpoint
+    - [x] Email validator
     - [x] Database connection
     - [x] RabbitMQ connection
-    - [ ] Communication to ban service
+    - [x] Publish new email request
 - [-] ban service
     - [ ] Data structure to store the ban list (trie/rbtree or golang's map)
     - [x] RabbitMQ connection
-    - [ ] Consume email events
-    - [ ] Publish ban event
+    - [x] Consume email events
+    - [x] Publish ban event
 
 ## TODO/Improvements
 
@@ -41,5 +42,9 @@ containers.
 - Add a database abstraction layer to thunder
 - Document the necessary environment variables (`PORT`, `RABBITMQ_URL`)
 - Manage environment vars with a config file
-- Naming (`EmailService`)
+- Naming (`EmailService`, `BanService`)
 - Project structure compliance
+- Connect to the database using environment variables
+- Better package organization, currently using replace to import each other packages
+- Fix the bug where the published email event is consumed by the
+  email service. It only happens when email service starts first.
