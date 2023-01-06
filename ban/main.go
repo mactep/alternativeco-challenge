@@ -3,6 +3,7 @@ package main
 import (
 	thunderEventRabbitmq "github.com/gothunder/thunder/pkg/events/rabbitmq"
 	thunderLogs "github.com/gothunder/thunder/pkg/log"
+	"github.com/mactep/alternativeco-challenge/ban/internal/features"
 	transportinbound "github.com/mactep/alternativeco-challenge/ban/internal/transport-inbound"
 	transportoutbound "github.com/mactep/alternativeco-challenge/ban/internal/transport-outbound"
 
@@ -20,6 +21,7 @@ func main() {
 
 		transportinbound.Module,
 		transportoutbound.Module,
+		features.Module,
 
 		thunderEventRabbitmq.PublisherModule,
 		thunderEventRabbitmq.InvokeConsumer,
