@@ -18,19 +18,20 @@ Run `docker-compose -f compose.yml -f compose.prod.yml up -d`
 build the binaries and the container images and run the
 containers.
 
-## Features
+## Checklist
 
 - [x] email service
     - [x] API endpoint
     - [x] Email validator
     - [x] Database connection
     - [x] RabbitMQ connection
-    - [x] Publish new email request
+    - [x] Publish new email message
+    - [x] Consume ban message
 - [x] ban service
     - [x] Data structure to store the ban list (trie/rbtree or golang's map)
     - [x] RabbitMQ connection
-    - [x] Consume email events
-    - [x] Publish ban event
+    - [x] Consume email message
+    - [x] Publish ban message
 
 ## TODO/Improvements
 
@@ -40,11 +41,10 @@ containers.
 - Unit tests
 - Add a factory to thunder to create structs that implements `HTTPHandler`
 - Add a database abstraction layer to thunder
-- Document the necessary environment variables (`PORT`, `RABBITMQ_URL`)
+- Document the necessary environment variables (`PORT`, `RABBITMQ_URL`, `RABBITMQ_QUEUE`)
 - Manage environment vars with a config file
 - Naming (`EmailService`, `BanService`)
 - Project structure compliance
 - Connect to the database using environment variables
 - Better package organization, currently using replace to import each other packages
-- Fix the bug where the published email event is consumed by the
-  email service. It only happens when email service starts first.
+- Check if the two queue approach is the best way to do it
